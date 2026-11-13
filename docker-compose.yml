@@ -1,0 +1,10 @@
+services:
+  servicesa-api:
+    image: servicesa-api
+    build:
+      context: .
+      dockerfile: Services/servicesA/ServicesA.API/Dockerfile
+    ports:
+      - "5000:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
