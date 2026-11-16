@@ -1,0 +1,127 @@
+<div class="page-header">
+  <div>
+    <h1 class="page-title">{{ 'email.title' | t }}</h1>
+    <p class="page-subtitle">{{ 'email.subtitle' | t }}</p>
+  </div>
+</div>
+
+@if (loadError(); as message) {
+  <div class="alert alert--error" role="alert">{{ message }}</div>
+}
+
+<section class="email-layout">
+  <!-- Settings saved in the database -->
+  <article class="card">
+    <header class="card__header">
+      <h2 class="card__title"><app-icon name="settings" [size]="18" /> {{ 'email.form' | t }}</h2>
+      @if (settings(); as s) {
+        <span class="badge" [class.badge--success]="s.source === 'database'" [class.badge--muted]="s.source !== 'database'">
+          {{ $any('email.source.' + s.source) | t }}
+        </span>
+      }
+    </header>
+
+    @if (settings(); as s) {
+      @if (s.source === 'configuration') {
+        <div class="alert alert--info" role="status">
+          <span>{{ 'email.sourceHint' | t }}
+            ({{ $any('email.mode.' + s.mode) | t }}@if (s.smtpServer) {: <span dir="ltr">{{ s.smtpServer }}:{{ s.port }}</span>})</span>
+          @if (isMailpit()) {
+            <a class="btn btn--outline btn--sm" href="http://localhost:8025" target="_blank" rel="noopener">
+              <app-icon name="mail" [size]="16" /> {{ 'email.openMailpit' | t }}
+            </a>
+          }
+        </div>
+      } @else if (s.modifiedAtUtc) {
+        <p class="muted dialog__hint">{{ 'config.lastSaved' | t: { date: (s.modifiedAtUtc | localDate) } }}</p>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="save()" novalidate class="form">
+        <div class="form-grid form-grid--3">
+          <label class="field">
+            <span class="field__label">{{ 'email.smtpServer' | t }}</span>
+            <input class="input" formControlName="smtpServer" dir="ltr" placeholder="smtp.example.com" autocomplete="off"
+              [attr.aria-invalid]="invalid('smtpServer')" />
+            @if (invalid('smtpServer')) { <span class="field__error">{{ 'email.invalidHost' | t }}</span> }
+          </label>
+          <label class="field">
+            <span class="field__label">{{ 'email.port' | t }}</span>
+            <input class="input" type="number" min="1" max="65535" formControlName="port" dir="ltr"
+              [attr.aria-invalid]="invalid('port')" />
+          </label>
+          <label class="field">
+            <span class="field__label">{{ 'email.security' | t }}</span>
+            <select class="input" formControlName="security">
+              @for (mode of securityModes; track mode) {
+                <option [value]="mode">{{ $any('email.security.' + mode) | t }}</option>
+              }
+            </select>
+          </label>
+        </div>
+
+        <div class="form-grid">
+          <label class="field">
+            <span class="field__label">{{ 'email.username' | t }}</span>
+            <input class="input" formControlName="username" dir="ltr" autocomplete="off" />
+          </label>
+          <label class="field">
+            <span class="field__label">{{ 'email.password' | t }}</span>
+            <input class="input" type="password" formControlName="password" dir="ltr" autocomplete="new-password"
+              [placeholder]="s.source === 'database' && s.hasPassword ? '••••••••' : ''" />
+            <small class="muted">{{ (s.source === 'database' && s.hasPassword ? 'email.passwordSaved' : 'email.passwordNone') | t }}</small>
+            @if (s.source === 'database' && s.hasPassword) {
+              <label class="inline-check">
+                <input type="checkbox" formControlName="removePassword" /> {{ 'email.removePassword' | t }}
+              </label>
+            }
+          </label>
+          <label class="field">
+            <span class="field__label">{{ 'email.senderEmail' | t }}</span>
+            <input class="input" type="email" formControlName="senderEmail" dir="ltr" autocomplete="off"
+              [attr.aria-invalid]="invalid('senderEmail')" />
+            @if (invalid('senderEmail')) { <span class="field__error">{{ 'config.invalidEmail' | t }}</span> }
+            <small class="muted">{{ 'email.senderNameHint' | t: { name: s.senderName ?? '' } }}</small>
+          </label>
+          <label class="field">
+            <span class="field__label">{{ 'email.resetUrl' | t }}</span>
+            <input class="input" type="url" formControlName="resetPasswordUrl" dir="ltr" autocomplete="off" />
+            <small class="muted">{{ 'email.resetUrlHint' | t }}</small>
+          </label>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn--primary" [disabled]="saving()">
+            @if (saving()) { <span class="spinner" aria-hidden="true"></span> {{ 'common.saving' | t }} }
+            @else { <app-icon name="save" [size]="16" /> {{ 'email.saveSettings' | t }} }
+          </button>
+          <small class="muted">{{ 'email.clearHint' | t }}</small>
+        </div>
+      </form>
+    } @else if (!loadError()) {
+      <div class="skeleton-list"><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span></div>
+    }
+  </article>
+
+  <!-- Test -->
+  <article class="card email-layout__test">
+    <header class="card__header">
+      <h2 class="card__title"><app-icon name="mail" [size]="18" /> {{ 'email.test' | t }}</h2>
+    </header>
+    <form [formGroup]="testForm" (ngSubmit)="send()" novalidate class="form">
+      <label class="field">
+        <span class="field__label">{{ 'email.to' | t }}</span>
+        <input class="input" type="email" formControlName="to" dir="ltr"
+          [attr.aria-invalid]="testForm.controls.to.touched && testForm.controls.to.invalid" />
+        @if (testForm.controls.to.touched && testForm.controls.to.invalid) {
+          <span class="field__error">{{ 'config.invalidEmail' | t }}</span>
+        }
+      </label>
+      <div>
+        <button type="submit" class="btn btn--primary" [disabled]="sending()">
+          @if (sending()) { <span class="spinner" aria-hidden="true"></span> {{ 'email.sending' | t }} }
+          @else { <app-icon name="mail" [size]="16" /> {{ 'email.send' | t }} }
+        </button>
+      </div>
+    </form>
+  </article>
+</section>

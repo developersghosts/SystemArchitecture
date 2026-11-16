@@ -1,0 +1,5 @@
+// Global styles. Colors and fonts come from the project configuration (see styles/_tokens.scss).
+@use 'styles/tokens';
+@use 'styles/base';
+@use 'styles/components';
+@use 'styles/layout';

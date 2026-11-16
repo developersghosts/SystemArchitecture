@@ -1,4 +1,11 @@
+global using BuildingBlocks;
+global using BuildingBlocks.Localization;
+global using BuildingBlocks.Pagination;
 global using Carter;
-global using ServicesA.Application;
-global using ServicesA.Infrastructure;
+global using MediatR;
 global using ServicesA.API;
+global using ServicesA.Application;
+global using ServicesA.Application.Features.Identity.Common;
+global using ServicesA.Domain.Entities.Identity;
+global using ServicesA.Infrastructure;
+global using Serilog;

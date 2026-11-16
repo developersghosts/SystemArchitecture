@@ -1,0 +1,40 @@
+<h2 class="auth__title">{{ 'otp.title' | t }}</h2>
+<p class="auth__subtitle">{{ 'otp.subtitle' | t: { userName: auth.pendingLogin()?.userName ?? '' } }}</p>
+
+
+<form [formGroup]="form" (ngSubmit)="submit()" novalidate class="form">
+  <label class="field">
+    <span class="field__label">{{ 'otp.code' | t }}</span>
+    <input class="input input--otp" formControlName="otp" inputmode="numeric" autocomplete="one-time-code"
+      maxlength="6" placeholder="••••••" dir="ltr" autofocus (input)="onInput($event)"
+      [attr.aria-invalid]="form.controls.otp.touched && form.controls.otp.invalid" />
+    @if (form.controls.otp.touched && form.controls.otp.invalid) {
+      <span class="field__error">{{ 'otp.invalid' | t }}</span>
+    }
+  </label>
+
+  <button type="submit" class="btn btn--primary btn--block" [disabled]="loading()">
+    @if (loading()) {
+      <span class="spinner" aria-hidden="true"></span>
+      {{ 'otp.submitting' | t }}
+    } @else {
+      {{ 'otp.submit' | t }}
+    }
+  </button>
+</form>
+
+<div class="auth__footer">
+  <button type="button" class="link-btn" (click)="changeUser()">
+    <app-icon name="arrowBack" [size]="16" class="flip-rtl" />
+    {{ 'otp.changeUser' | t }}
+  </button>
+
+  <button type="button" class="link-btn" (click)="resend()" [disabled]="secondsLeft() > 0 || resending()">
+    <app-icon name="refresh" [size]="16" />
+    @if (secondsLeft() > 0) {
+      {{ 'otp.resendIn' | t: { seconds: secondsLeft() } }}
+    } @else {
+      {{ 'otp.resend' | t }}
+    }
+  </button>
+</div>

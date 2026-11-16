@@ -1,2 +1,9 @@
 **/bin
 **/obj
+# The Angular UI is not part of the API image
+UI/
+**/node_modules
+.vs/
+.git/
+logs/
+emails/

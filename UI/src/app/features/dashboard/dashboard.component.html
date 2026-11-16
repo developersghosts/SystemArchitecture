@@ -1,0 +1,132 @@
+<div class="page-header">
+  <div>
+    <h1 class="page-title">{{ 'dashboard.welcome' | t: { name: firstName() } }}</h1>
+    <p class="page-subtitle">{{ 'dashboard.subtitle' | t }}</p>
+  </div>
+</div>
+
+<section class="stats">
+  <article class="card stat">
+    <span class="stat__icon"><app-icon name="users" /></span>
+    <div>
+      <span class="stat__label">{{ 'dashboard.users' | t }}</span>
+      <strong class="stat__value">{{ canSeeUsers ? (usersCount() ?? '…') : '—' }}</strong>
+    </div>
+  </article>
+
+  <article class="card stat">
+    <span class="stat__icon"><app-icon name="shield" /></span>
+    <div>
+      <span class="stat__label">{{ 'dashboard.roles' | t }}</span>
+      <strong class="stat__value">{{ canSeeRoles ? (rolesCount() ?? '…') : '—' }}</strong>
+    </div>
+  </article>
+
+  <article class="card stat">
+    <span class="stat__icon"><app-icon name="user" /></span>
+    <div>
+      <span class="stat__label">{{ 'dashboard.myRoles' | t }}</span>
+      <strong class="stat__value">{{ auth.roles().length }}</strong>
+    </div>
+  </article>
+
+  <article class="card stat">
+    <span class="stat__icon"><app-icon name="clock" /></span>
+    <div>
+      <span class="stat__label">{{ 'dashboard.sessionEnds' | t }}</span>
+      <strong class="stat__value stat__value--sm">
+        {{ auth.session()?.expiresAt | localDate }}
+      </strong>
+    </div>
+  </article>
+</section>
+
+<section class="grid-2">
+  <article class="card">
+    <header class="card__header">
+      <h2 class="card__title"><app-icon name="user" [size]="18" /> {{ 'dashboard.profile' | t }}</h2>
+    </header>
+    @if (auth.user(); as user) {
+      <dl class="details">
+        <dt>{{ 'dashboard.name' | t }}</dt>
+        <dd>{{ user.fullName }}</dd>
+        <dt>{{ 'login.userName' | t }}</dt>
+        <dd>{{ user.userName }}</dd>
+        <dt>{{ 'dashboard.email' | t }}</dt>
+        <dd dir="ltr">{{ user.email }}</dd>
+        <dt>{{ 'dashboard.birthDate' | t }}</dt>
+        <dd>{{ user.dateOfBirth ? (user.dateOfBirth | localDate: 'long') : '—' }}</dd>
+        <dt>{{ 'dashboard.myRoles' | t }}</dt>
+        <dd class="tags">
+          @for (role of user.roles; track role) {
+            <span class="tag">{{ role }}</span>
+          }
+        </dd>
+      </dl>
+    }
+  </article>
+
+  <article class="card">
+    <header class="card__header">
+      <h2 class="card__title"><app-icon name="building" [size]="18" /> {{ 'dashboard.company' | t }}</h2>
+    </header>
+    @let company = config.config().company;
+    <dl class="details">
+      <dt>{{ 'dashboard.name' | t }}</dt>
+      <dd>{{ config.companyName() }}</dd>
+      <dt>{{ 'config.email' | t }}</dt>
+      <dd dir="ltr">{{ company.email ?? '—' }}</dd>
+      <dt>{{ 'config.phone' | t }}</dt>
+      <dd dir="ltr">{{ company.phone ?? '—' }}</dd>
+      <dt>{{ 'config.currency' | t }}</dt>
+      <dd>{{ config.config().currency.code }} ({{ config.config().currency.symbol }})</dd>
+      <dt>{{ 'dashboard.currencySample' | t }}</dt>
+      <dd><strong>{{ moneySample() }}</strong></dd>
+    </dl>
+  </article>
+</section>
+
+<article class="card">
+  <header class="card__header">
+    <h2 class="card__title"><app-icon name="users" [size]="18" /> {{ 'dashboard.recentUsers' | t }}</h2>
+  </header>
+
+  @if (!canSeeUsers) {
+    <p class="muted">{{ 'dashboard.noAccess' | t }}</p>
+  } @else if (loadingUsers()) {
+    <div class="skeleton-list">
+      <span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span>
+    </div>
+  } @else {
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>{{ 'dashboard.name' | t }}</th>
+            <th>{{ 'login.userName' | t }}</th>
+            <th>{{ 'dashboard.email' | t }}</th>
+            <th>{{ 'dashboard.status' | t }}</th>
+            <th>{{ 'dashboard.lastActive' | t }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (user of users(); track user.id) {
+            <tr>
+              <td>{{ user.firstName }} {{ user.lastName }}</td>
+              <td>{{ user.userName }}</td>
+              <td dir="ltr">{{ user.email }}</td>
+              <td>
+                <span class="badge" [class.badge--success]="user.isActive" [class.badge--muted]="!user.isActive">
+                  {{ (user.isActive ? 'common.active' : 'common.inactive') | t }}
+                </span>
+              </td>
+              <td>
+                {{ user.lastActiveAtUtc ? (user.lastActiveAtUtc | localDate) : ('dashboard.never' | t) }}
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</article>

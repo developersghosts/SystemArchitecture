@@ -1,0 +1,159 @@
+<div class="page-header">
+  <div>
+    <h1 class="page-title">{{ 'groups.title' | t }}</h1>
+    <p class="page-subtitle">{{ 'groups.subtitle' | t }}</p>
+  </div>
+  @if (canManage) {
+    <div class="page-actions">
+      <button type="button" class="btn btn--primary" (click)="openCreate()">
+        <app-icon name="plus" [size]="18" /> {{ 'groups.add' | t }}
+      </button>
+    </div>
+  }
+</div>
+
+<article class="card">
+  <div class="toolbar">
+    <label class="search">
+      <app-icon name="search" [size]="18" class="search__icon" />
+      <input class="input input--with-icon" type="search" [value]="search()" (input)="onSearch($any($event.target).value)"
+        [attr.aria-label]="'groups.search' | t" [placeholder]="'groups.search' | t" />
+    </label>
+    <span class="muted">{{ 'groups.total' | t: { count: total() } }}</span>
+  </div>
+
+  @if (loading() && items().length === 0) {
+    <div class="skeleton-list"><span class="skeleton"></span><span class="skeleton"></span></div>
+  } @else if (failed()) {
+    <div class="alert alert--error" role="alert">
+      {{ 'errors.unexpected' | t }}
+      <button type="button" class="btn btn--outline btn--sm" (click)="load()">
+        <app-icon name="refresh" [size]="16" /> {{ 'common.retry' | t }}
+      </button>
+    </div>
+  } @else if (items().length === 0) {
+    <p class="empty muted">{{ 'groups.empty' | t }}</p>
+  } @else {
+    <div class="table-wrap" [class.is-loading]="loading()">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>{{ 'groups.name' | t }}</th>
+            <th>{{ 'groups.roles' | t }}</th>
+            <th>{{ 'groups.members' | t }}</th>
+            @if (canManage) { <th class="col-actions">{{ 'users.columns.actions' | t }}</th> }
+          </tr>
+        </thead>
+        <tbody>
+          @for (group of items(); track group.id) {
+            <tr>
+              <td class="cell-wrap">
+                <strong>{{ group.name }}</strong>
+                @if (group.description) { <br /><small class="muted">{{ group.description }}</small> }
+              </td>
+              <td class="cell-wrap">
+                <span class="tags">
+                  @for (role of group.roles; track role.id) {
+                    <span class="tag" [attr.title]="role.name">{{ role.title }}</span>
+                  } @empty {
+                    <span class="muted">{{ 'groups.noRoles' | t }}</span>
+                  }
+                </span>
+              </td>
+              <td>{{ 'groups.memberCount' | t: { count: group.memberCount } }}</td>
+              @if (canManage) {
+                <td class="col-actions">
+                  <button type="button" class="icon-btn icon-btn--sm" (click)="openEdit(group)"
+                    [attr.aria-label]="('users.edit' | t) + ' ' + group.name" [attr.title]="'users.edit' | t">
+                    <app-icon name="pencil" [size]="16" />
+                  </button>
+                  <button type="button" class="icon-btn icon-btn--sm icon-btn--danger" (click)="deleting.set(group)"
+                    [attr.aria-label]="('groups.delete' | t) + ' ' + group.name" [attr.title]="'groups.delete' | t">
+                    <app-icon name="trash" [size]="16" />
+                  </button>
+                </td>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    @if (totalPages() > 1) {
+      <nav class="pager" aria-label="Pagination">
+        <button type="button" class="icon-btn" (click)="goTo(page() - 1)" [disabled]="page() === 1" [attr.aria-label]="'users.previous' | t">
+          <app-icon name="chevronStart" class="flip-rtl" />
+        </button>
+        <span>{{ 'users.page' | t: { page: page(), pages: totalPages() } }}</span>
+        <button type="button" class="icon-btn" (click)="goTo(page() + 1)" [disabled]="page() === totalPages()" [attr.aria-label]="'users.next' | t">
+          <app-icon name="chevronEnd" class="flip-rtl" />
+        </button>
+      </nav>
+    }
+  }
+</article>
+
+<!-- Create / edit -->
+<app-dialog [open]="formOpen()" [busy]="saving()" [wide]="true" (closed)="formOpen.set(false)"
+  [title]="editing() ? ('groups.editTitle' | t: { name: editing()!.name }) : ('groups.createTitle' | t)">
+  <form id="group-form" [formGroup]="form" (ngSubmit)="save()" novalidate class="form">
+    <div class="form-grid">
+      <label class="field">
+        <span class="field__label">{{ 'groups.name' | t }} *</span>
+        <input class="input" formControlName="name" autocomplete="off" [attr.aria-invalid]="invalid('name')" />
+        @if (invalid('name')) { <span class="field__error">{{ 'groups.invalidName' | t }}</span> }
+      </label>
+      <label class="field">
+        <span class="field__label">{{ 'groups.description' | t }}</span>
+        <input class="input" formControlName="description" autocomplete="off" />
+      </label>
+    </div>
+
+    <fieldset class="checks">
+      <legend class="field__label">{{ 'groups.roles' | t }}</legend>
+      <small class="muted">{{ 'groups.rolesHint' | t }}</small>
+      @for (role of allRoles(); track role.id) {
+        <label class="check">
+          <input type="checkbox" [checked]="selectedRoles().includes(role.id)" [disabled]="saving()"
+            (change)="toggleRole(role.id, $any($event.target).checked)" />
+          <span>{{ role.title }} <small class="muted" dir="ltr">({{ role.name }})</small></span>
+        </label>
+      }
+    </fieldset>
+
+    @if (loadingDetails()) {
+      <div class="skeleton-list"><span class="skeleton"></span></div>
+    } @else if (editing(); as details) {
+      <div class="field">
+        <span class="field__label">{{ 'groups.members' | t }} ({{ details.members.length }})</span>
+        @if (details.members.length) {
+          <ul class="member-list">
+            @for (m of details.members; track m.userId) {
+              <li><span class="avatar avatar--sm">{{ m.fullName[0] }}</span> {{ m.fullName }} <small class="muted" dir="ltr">{{ m.userName }}</small></li>
+            }
+          </ul>
+        } @else {
+          <small class="muted">{{ 'groups.noMembers' | t }}</small>
+        }
+      </div>
+    }
+  </form>
+  <div dialog-actions>
+    <button type="button" class="btn btn--outline" (click)="formOpen.set(false)" [disabled]="saving()">{{ 'common.cancel' | t }}</button>
+    <button type="submit" form="group-form" class="btn btn--primary" [disabled]="saving() || loadingDetails()">
+      @if (saving()) { <span class="spinner" aria-hidden="true"></span> {{ 'common.saving' | t }} } @else { {{ 'common.save' | t }} }
+    </button>
+  </div>
+</app-dialog>
+
+<!-- Delete -->
+<app-dialog [open]="!!deleting()" [busy]="deleteBusy()" [title]="'groups.delete' | t" (closed)="deleting.set(null)">
+  <p>{{ 'groups.deleteConfirm' | t: { name: deleting()?.name ?? '', count: deleting()?.memberCount ?? 0 } }}</p>
+  <div dialog-actions>
+    <button type="button" class="btn btn--outline" (click)="deleting.set(null)" [disabled]="deleteBusy()">{{ 'common.cancel' | t }}</button>
+    <button type="button" class="btn btn--danger" (click)="confirmDelete()" [disabled]="deleteBusy()">
+      @if (deleteBusy()) { <span class="spinner" aria-hidden="true"></span> }
+      <app-icon name="trash" [size]="16" /> {{ 'groups.delete' | t }}
+    </button>
+  </div>
+</app-dialog>

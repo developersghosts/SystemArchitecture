@@ -1,0 +1,252 @@
+<div class="page-header">
+  <div>
+    <h1 class="page-title">{{ 'config.title' | t }}</h1>
+    <p class="page-subtitle">
+      {{ 'config.subtitle' | t }}
+      <br />
+      <small class="muted">
+        @if (saved().modifiedAtUtc; as modified) {
+          {{ 'config.lastSaved' | t: { date: (modified | localDate) } }}
+        } @else {
+          {{ 'config.notSaved' | t }}
+        }
+      </small>
+    </p>
+  </div>
+  <div class="page-actions">
+    <button type="button" class="btn btn--outline" (click)="reset()" [disabled]="saving() || form.pristine">
+      {{ 'common.reset' | t }}
+    </button>
+    <button type="submit" form="config-form" class="btn btn--primary" [disabled]="saving()">
+      @if (saving()) {
+        <span class="spinner" aria-hidden="true"></span> {{ 'common.saving' | t }}
+      } @else {
+        <app-icon name="save" [size]="18" /> {{ 'common.save' | t }}
+      }
+    </button>
+  </div>
+</div>
+
+<form id="config-form" [formGroup]="form" (ngSubmit)="save()" novalidate class="config-layout">
+  <div class="config-sections">
+    <!-- Company -->
+    <section class="card" formGroupName="company">
+      <header class="card__header">
+        <h2 class="card__title"><app-icon name="building" [size]="18" /> {{ 'config.company' | t }}</h2>
+      </header>
+      <div class="form-grid">
+        <label class="field">
+          <span class="field__label">{{ 'config.nameEn' | t }} *</span>
+          <input class="input" formControlName="nameEn" dir="ltr" [attr.aria-invalid]="invalid('company.nameEn')" />
+          @if (invalid('company.nameEn')) { <span class="field__error">{{ 'common.required' | t }}</span> }
+        </label>
+        <label class="field">
+          <span class="field__label">{{ 'config.nameAr' | t }} *</span>
+          <input class="input" formControlName="nameAr" dir="rtl" [attr.aria-invalid]="invalid('company.nameAr')" />
+          @if (invalid('company.nameAr')) { <span class="field__error">{{ 'common.required' | t }}</span> }
+        </label>
+        <label class="field">
+          <span class="field__label">{{ 'config.email' | t }}</span>
+          <input class="input" type="email" formControlName="email" dir="ltr" [attr.aria-invalid]="invalid('company.email')" />
+          @if (invalid('company.email')) { <span class="field__error">{{ 'config.invalidEmail' | t }}</span> }
+        </label>
+        <label class="field">
+          <span class="field__label">{{ 'config.phone' | t }}</span>
+          <input class="input" type="tel" formControlName="phone" dir="ltr" [attr.aria-invalid]="invalid('company.phone')" />
+          @if (invalid('company.phone')) { <span class="field__error">{{ 'config.invalidPhone' | t }}</span> }
+        </label>
+        <label class="field">
+          <span class="field__label">{{ 'config.website' | t }}</span>
+          <input class="input" type="url" formControlName="website" dir="ltr" placeholder="https://"
+            [attr.aria-invalid]="invalid('company.website')" />
+          @if (invalid('company.website')) { <span class="field__error">{{ 'config.invalidUrl' | t }}</span> }
+        </label>
+        <label class="field">
+          <span class="field__label">{{ 'config.taxNumber' | t }}</span>
+          <input class="input" formControlName="taxNumber" dir="ltr" />
+        </label>
+        <label class="field">
+          <span class="field__label">{{ 'config.country' | t }}</span>
+          <select class="input" formControlName="country">
+            <option value="">{{ 'config.country.none' | t }}</option>
+            <option value="EG">{{ 'config.country.EG' | t }}</option>
+            <option value="SA">{{ 'config.country.SA' | t }}</option>
+          </select>
+          <small class="muted">{{ 'config.countryHint' | t }}</small>
+        </label>
+        <label class="field field--wide">
+          <span class="field__label">{{ 'config.address' | t }}</span>
+          <textarea class="input" rows="2" formControlName="address"></textarea>
+        </label>
+
+        <div class="field field--wide">
+          <span class="field__label">{{ 'config.logo' | t }}</span>
+          <div class="logo-picker">
+            <span class="logo-picker__preview">
+              @if (logo(); as src) {
+                <img [src]="src" alt="" />
+              } @else {
+                <app-icon name="building" [size]="28" />
+              }
+            </span>
+            <div class="logo-picker__actions">
+              <label class="btn btn--outline btn--sm" [class.is-disabled]="processingLogo()">
+                @if (processingLogo()) {
+                  <span class="spinner" aria-hidden="true"></span> {{ 'config.logoProcessing' | t }}
+                } @else {
+                  <app-icon name="upload" [size]="16" /> {{ 'config.uploadLogo' | t }}
+                }
+                <input type="file" accept="image/*" class="visually-hidden" [disabled]="processingLogo()"
+                  (change)="onLogoSelected($event)" />
+              </label>
+              @if (logo()) {
+                <button type="button" class="btn btn--ghost btn--sm" (click)="removeLogo()">
+                  <app-icon name="trash" [size]="16" /> {{ 'common.remove' | t }}
+                </button>
+              }
+              <small class="muted">{{ 'config.logoHint' | t }}</small>
+              @if (logoError(); as message) { <span class="field__error">{{ message }}</span> }
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Currency -->
+    <section class="card" formGroupName="currency">
+      <header class="card__header">
+        <h2 class="card__title"><app-icon name="money" [size]="18" /> {{ 'config.currency' | t }}</h2>
+      </header>
+      <div class="form-grid form-grid--3">
+        <label class="field">
+          <span class="field__label">{{ 'config.currencyCode' | t }} *</span>
+          <input class="input input--upper" formControlName="code" maxlength="3" dir="ltr" placeholder="USD"
+            [attr.aria-invalid]="invalid('currency.code')" />
+          @if (invalid('currency.code')) { <span class="field__error">{{ 'config.invalidCode' | t }}</span> }
+        </label>
+        <label class="field">
+          <span class="field__label">{{ 'config.currencySymbol' | t }} *</span>
+          <input class="input" formControlName="symbol" maxlength="10" [attr.aria-invalid]="invalid('currency.symbol')" />
+          @if (invalid('currency.symbol')) { <span class="field__error">{{ 'common.required' | t }}</span> }
+        </label>
+        <label class="field">
+          <span class="field__label">{{ 'config.decimalPlaces' | t }}</span>
+          <select class="input" formControlName="decimalPlaces">
+            @for (n of [0, 1, 2, 3, 4]; track n) {
+              <option [ngValue]="n">{{ n }}</option>
+            }
+          </select>
+        </label>
+      </div>
+    </section>
+
+    <!-- Colors -->
+    <section class="card" formGroupName="colors">
+      <header class="card__header">
+        <h2 class="card__title"><app-icon name="palette" [size]="18" /> {{ 'config.colors' | t }}</h2>
+      </header>
+      <div class="form-grid form-grid--3">
+        @for (color of [
+          { name: 'primary', label: 'config.primary' },
+          { name: 'lightBackground', label: 'config.lightBackground' },
+          { name: 'darkBackground', label: 'config.darkBackground' }
+        ]; track color.name) {
+          <label class="field">
+            <span class="field__label">{{ $any(color.label) | t }}</span>
+            <span class="color-field">
+              <input type="color" class="color-field__swatch" [value]="form.controls.colors.get(color.name)?.value"
+                (input)="setColor($any(color.name), $event)" [attr.aria-label]="$any(color.label) | t" />
+              <input class="input input--upper" [formControlName]="color.name" maxlength="7" dir="ltr"
+                [attr.aria-invalid]="invalid('colors.' + color.name)" />
+            </span>
+            @if (invalid('colors.' + color.name)) { <span class="field__error">{{ 'config.invalidColor' | t }}</span> }
+          </label>
+        }
+      </div>
+    </section>
+
+    <!-- Fonts + defaults -->
+    <section class="card">
+      <header class="card__header">
+        <h2 class="card__title"><app-icon name="type" [size]="18" /> {{ 'config.fonts' | t }}</h2>
+      </header>
+      <div class="form-grid form-grid--3" formGroupName="fonts">
+        <label class="field">
+          <span class="field__label">{{ 'config.fontEn' | t }}</span>
+          <select class="input" formControlName="fontFamilyEn">
+            @for (font of englishFonts(); track font) { <option [value]="font">{{ font }}</option> }
+          </select>
+        </label>
+        <label class="field">
+          <span class="field__label">{{ 'config.fontAr' | t }}</span>
+          <select class="input" formControlName="fontFamilyAr">
+            @for (font of arabicFonts(); track font) { <option [value]="font">{{ font }}</option> }
+          </select>
+        </label>
+        <label class="field">
+          <span class="field__label">{{ 'config.fontSize' | t }}</span>
+          <input class="input" type="number" min="12" max="20" formControlName="baseFontSize"
+            [attr.aria-invalid]="invalid('fonts.baseFontSize')" />
+        </label>
+      </div>
+
+      <header class="card__header card__header--sub">
+        <h3 class="card__title">{{ 'config.defaults' | t }}</h3>
+      </header>
+      <div class="form-grid">
+        <label class="field">
+          <span class="field__label">{{ 'config.defaultLanguage' | t }}</span>
+          <select class="input" formControlName="defaultLanguage">
+            <option value="en">{{ 'config.english' | t }}</option>
+            <option value="ar">{{ 'config.arabic' | t }}</option>
+          </select>
+        </label>
+        <label class="field">
+          <span class="field__label">{{ 'config.defaultTheme' | t }}</span>
+          <select class="input" formControlName="defaultTheme">
+            <option value="light">{{ 'config.light' | t }}</option>
+            <option value="dark">{{ 'config.dark' | t }}</option>
+          </select>
+        </label>
+      </div>
+    </section>
+  </div>
+
+  <!-- Always visible while there are unsaved changes, so Save is never off screen -->
+  @if (form.dirty) {
+    <div class="save-bar" role="status">
+      <span class="save-bar__text"><app-icon name="clock" [size]="18" /> {{ 'config.unsaved' | t }}</span>
+      <div class="save-bar__actions">
+        <button type="button" class="btn btn--outline btn--sm" (click)="reset()" [disabled]="saving()">
+          {{ 'config.discard' | t }}
+        </button>
+        <button type="submit" class="btn btn--primary btn--sm" [disabled]="saving() || processingLogo()">
+          @if (saving()) {
+            <span class="spinner" aria-hidden="true"></span> {{ 'common.saving' | t }}
+          } @else {
+            <app-icon name="save" [size]="16" /> {{ 'common.save' | t }}
+          }
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- Live preview -->
+  <aside class="card config-preview">
+    <header class="card__header">
+      <h2 class="card__title">{{ 'config.preview' | t }}</h2>
+    </header>
+    <div class="config-preview__brand">
+      <span class="logo-picker__preview">
+        @if (logo(); as src) { <img [src]="src" alt="" /> } @else { <app-icon name="building" [size]="24" /> }
+      </span>
+      <strong>{{ language.isArabic() ? form.controls.company.controls.nameAr.value : form.controls.company.controls.nameEn.value }}</strong>
+    </div>
+    <p>{{ 'config.previewText' | t }}</p>
+    <p class="config-preview__amount">{{ previewMoney() }}</p>
+    <div class="config-preview__buttons">
+      <button type="button" class="btn btn--primary btn--sm">{{ 'common.save' | t }}</button>
+      <button type="button" class="btn btn--outline btn--sm">{{ 'common.cancel' | t }}</button>
+    </div>
+  </aside>
+</form>

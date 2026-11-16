@@ -3,3 +3,10 @@ obj/
 .vs/
 *.user
 .idea/
+
+logs/
+
+.env
+
+# Development emails saved by SmtpEmailService (contain OTP codes and reset links)
+emails/

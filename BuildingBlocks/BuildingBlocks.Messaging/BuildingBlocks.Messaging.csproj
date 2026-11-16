@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <!-- MassTransit 8.x is Apache-2.0 (free). 9.x needs a commercial license key. -->
+    <PackageReference Include="MassTransit.RabbitMQ" Version="8.5.12" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="APP_Name" xml:space="preserve"><value>System Architecture</value></data>
+  <data name="NotFound" xml:space="preserve"><value>The requested item was not found.</value></data>
+  <data name="BadRequest" xml:space="preserve"><value>The request is invalid.</value></data>
+  <data name="ValidationFailed" xml:space="preserve"><value>One or more validation errors occurred.</value></data>
+  <data name="InternalServerError" xml:space="preserve"><value>An unexpected error occurred. Please try again later.</value></data>
+  <data name="Unauthorized" xml:space="preserve"><value>You are not authorized to perform this action.</value></data>
+  <data name="TooManyRequests" xml:space="preserve"><value>Too many attempts. Please wait a moment and try again.</value></data>
+  <data name="AllRightsReserved" xml:space="preserve"><value>All rights reserved</value></data>
+  <data name="FailedLogin" xml:space="preserve"><value>Login failed.</value></data>
+  <data name="LoginSuccessful" xml:space="preserve"><value>Login successful.</value></data>
+  <data name="SuccessLoginTitle" xml:space="preserve"><value>New sign-in to your account</value></data>
+  <data name="IFYouNotLoggedIn" xml:space="preserve"><value>If this was not you, change your password and contact support immediately.</value></data>
+  <data name="Login_Information_Incorrect" xml:space="preserve"><value>Login information is incorrect.</value></data>
+  <data name="UserNotActive" xml:space="preserve"><value>This user is not active. Please contact the administrator.</value></data>
+  <data name="AccountLocked" xml:space="preserve"><value>The account is temporarily locked after too many failed attempts. Try again later.</value></data>
+  <data name="User_Already_Logged_In" xml:space="preserve"><value>This user is already logged in from another device. Log out there first, or log in again with forceLogin = true.</value></data>
+  <data name="OTP_Sent" xml:space="preserve"><value>A verification code was sent to your email.</value></data>
+  <data name="OTP_FAIL" xml:space="preserve"><value>The verification code is invalid or has expired.</value></data>
+  <data name="OtpEmailTitle" xml:space="preserve"><value>Your verification code</value></data>
+  <data name="OtpEmailBody" xml:space="preserve"><value>Use this code to complete your sign-in. It expires in 5 minutes.</value></data>
+  <data name="CurrentUserUnknown" xml:space="preserve"><value>Could not identify the current user. Please log in again.</value></data>
+  <data name="UserNotFound" xml:space="preserve"><value>The user was not found.</value></data>
+  <data name="RoleNotFound" xml:space="preserve"><value>One or more roles were not found.</value></data>
+  <data name="RolesAlreadyAssigned" xml:space="preserve"><value>These roles are already assigned to the user:</value></data>
+  <data name="CannotRemoveOwnAdministrator" xml:space="preserve"><value>You cannot remove the Administrator role from your own account.</value></data>
+  <data name="CannotDeactivateYourself" xml:space="preserve"><value>You cannot deactivate your own account.</value></data>
+  <data name="EmailButtonFallback" xml:space="preserve"><value>If the button does not work, copy this link into your browser:</value></data>
+  <data name="EmailAutomatedNote" xml:space="preserve"><value>This is an automatic message, please do not reply to it.</value></data>
+  <data name="SmtpPasswordRequired" xml:space="preserve"><value>You changed the server or user name: enter the SMTP password again.</value></data>
+  <data name="SessionCannotBeRenewed" xml:space="preserve"><value>Your session has ended and cannot be renewed. Please sign in again.</value></data>
+  <data name="GroupNotFound" xml:space="preserve"><value>The group was not found.</value></data>
+  <data name="GroupNameExists" xml:space="preserve"><value>A group with this name already exists.</value></data>
+  <data name="CannotLoseOwnAdministratorByGroup" xml:space="preserve"><value>This change would remove the Administrator role from your own account.</value></data>
+  <data name="TestEmailTitle" xml:space="preserve"><value>Test email</value></data>
+  <data name="TestEmailBody" xml:space="preserve"><value>If you can read this, the email settings work.</value></data>
+  <data name="WelcomeTitle" xml:space="preserve"><value>Welcome</value></data>
+  <data name="WelcomeBody" xml:space="preserve"><value>Your account has been created. Your user name is:</value></data>
+  <data name="PasswordChangedTitle" xml:space="preserve"><value>Your password was changed</value></data>
+  <data name="PasswordChangedBody" xml:space="preserve"><value>The password for your account was changed and all previous sessions were signed out.</value></data>
+  <data name="ResetPasswordTitle" xml:space="preserve"><value>Reset your password</value></data>
+  <data name="ResetPasswordBody" xml:space="preserve"><value>We received a request to reset your password. If you did not ask for this, ignore this email.</value></data>
+  <data name="ResetPasswordButton" xml:space="preserve"><value>Reset password</value></data>
+  <data name="InvalidResetToken" xml:space="preserve"><value>The reset link is invalid or has expired.</value></data>
+</root>

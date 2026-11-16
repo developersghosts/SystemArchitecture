@@ -1,0 +1,89 @@
+<app-dialog [open]="open()" [busy]="saving()" [wide]="true" (closed)="closed.emit()"
+  [title]="isEdit() ? ('users.editTitle' | t: { name: user()?.firstName + ' ' + user()?.lastName }) : ('users.createTitle' | t)">
+  <form id="user-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <div class="form-grid">
+      <label class="field">
+        <span class="field__label">{{ 'users.firstName' | t }} *</span>
+        <input class="input" formControlName="firstName" autocomplete="off" [attr.aria-invalid]="invalid('firstName')" />
+        @if (invalid('firstName')) { <span class="field__error">{{ 'common.required' | t }}</span> }
+      </label>
+      <label class="field">
+        <span class="field__label">{{ 'users.lastName' | t }} *</span>
+        <input class="input" formControlName="lastName" autocomplete="off" [attr.aria-invalid]="invalid('lastName')" />
+        @if (invalid('lastName')) { <span class="field__error">{{ 'common.required' | t }}</span> }
+      </label>
+      <label class="field">
+        <span class="field__label">{{ 'users.columns.userName' | t }} *</span>
+        <input class="input" formControlName="userName" dir="ltr" autocomplete="off" [attr.aria-invalid]="invalid('userName')" />
+        @if (invalid('userName')) { <span class="field__error">{{ 'users.invalidUserName' | t }}</span> }
+      </label>
+      <label class="field">
+        <span class="field__label">{{ 'users.columns.email' | t }} *</span>
+        <input class="input" type="email" formControlName="email" dir="ltr" autocomplete="off" [attr.aria-invalid]="invalid('email')" />
+        @if (invalid('email')) { <span class="field__error">{{ 'config.invalidEmail' | t }}</span> }
+      </label>
+      <label class="field">
+        <span class="field__label">{{ 'users.columns.phone' | t }}</span>
+        <input class="input" type="tel" formControlName="phoneNumber" dir="ltr" autocomplete="off" />
+      </label>
+      <label class="field">
+        <span class="field__label">{{ 'users.dateOfBirth' | t }}</span>
+        <input class="input" type="date" formControlName="dateOfBirth" />
+      </label>
+
+      @if (!isEdit()) {
+        <label class="field field--wide">
+          <span class="field__label">{{ 'users.password' | t }} *</span>
+          <input class="input" type="password" formControlName="password" dir="ltr" autocomplete="new-password"
+            [attr.aria-invalid]="invalid('password')" />
+          @if (invalid('password')) { <span class="field__error">{{ 'users.passwordInvalid' | t }}</span> }
+          <small class="muted">{{ 'users.passwordHint' | t }}</small>
+        </label>
+
+        @if (groups().length > 0) {
+          <fieldset class="field field--wide checks">
+            <legend class="field__label">{{ 'users.assignGroups' | t }}</legend>
+            @for (group of groups(); track group.id) {
+              <label class="check">
+                <input type="checkbox" [checked]="selectedGroups().includes(group.id)"
+                  (change)="toggleGroup(group.id, $any($event.target).checked)" />
+                <span>
+                  <strong>{{ group.name }}</strong>
+                  <span class="tags check__tags">
+                    @for (role of group.roles; track role.id) { <span class="tag">{{ role.title }}</span> }
+                  </span>
+                </span>
+              </label>
+            }
+          </fieldset>
+        }
+
+        @if (roles().length > 0) {
+          <fieldset class="field field--wide checks">
+            <legend class="field__label">{{ 'users.assignRoles' | t }}</legend>
+            @for (role of roles(); track role.id) {
+              <label class="check">
+                <input type="checkbox" [checked]="selectedRoles().includes(role.id)"
+                  (change)="toggleRole(role.id, $any($event.target).checked)" />
+                <span>{{ role.title }} <small class="muted" dir="ltr">({{ role.name }})</small></span>
+              </label>
+            }
+          </fieldset>
+        }
+      } @else {
+        <label class="check field--wide">
+          <input type="checkbox" formControlName="isActive" />
+          <span>{{ 'users.isActive' | t }}</span>
+        </label>
+        @if (isSelf()) { <small class="muted field--wide">{{ 'users.cannotDeactivateSelf' | t }}</small> }
+      }
+    </div>
+  </form>
+
+  <div dialog-actions>
+    <button type="button" class="btn btn--outline" (click)="closed.emit()" [disabled]="saving()">{{ 'common.cancel' | t }}</button>
+    <button type="submit" form="user-form" class="btn btn--primary" [disabled]="saving()">
+      @if (saving()) { <span class="spinner" aria-hidden="true"></span> {{ 'common.saving' | t }} } @else { {{ 'common.save' | t }} }
+    </button>
+  </div>
+</app-dialog>

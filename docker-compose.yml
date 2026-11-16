@@ -8,3 +8,71 @@ services:
       - "5000:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=ServiceDb;User Id=sa;Password=${MSSQL_SA_PASSWORD:-Your_strong_Passw0rd};TrustServerCertificate=True
+      # Creates ServiceDb, applies migrations and seeds the Identity roles; the admin is created only when ADMIN_PASSWORD is set in .env
+      - Database__InitializeOnStartup=true
+      # Sign-in session length (the UI offers to renew it 5 minutes before the end)
+      - JWT__DurationInMinutes=${JWT_DURATION_MINUTES:-120}
+      - Seed__Admin__UserName=Administrator
+      - Seed__Admin__Email=omar-fathy@outlook.com
+      - Seed__Admin__FirstName=Omar
+      - Seed__Admin__LastName=Fathy
+      - Seed__Admin__DateOfBirth=1988-08-19
+      - Seed__Admin__PhoneNumber=0595042263
+      - Seed__Admin__Password=${ADMIN_PASSWORD:-}
+      # Encryption keys for secrets saved in the database (SMTP password) and for reset links: kept in a volume
+      - DataProtection__KeysPath=/app/keys
+      # Email: the real server is saved in the database (Settings > Email). These values are only the fallback
+      # used while nothing is saved there: Mailpit by default (inbox at http://localhost:8025).
+      - EmailSettings__SmtpServer=${SMTP_SERVER:-mailpit}
+      - EmailSettings__Port=${SMTP_PORT:-1025}
+      - EmailSettings__Security=${SMTP_SECURITY:-None}
+      - EmailSettings__Username=${SMTP_USERNAME:-}
+      - EmailSettings__Password=${SMTP_PASSWORD:-}
+      - EmailSettings__SenderEmail=${SMTP_SENDER:-no-reply@systemarchitecture.local}
+      # Fallback only: the sender name is the company name from Project configuration (Arabic/English per email language)
+      - EmailSettings__SenderName=${SMTP_SENDER_NAME:-System Architecture}
+      # Page of this project's UI that opens the reset link from the email
+      - EmailSettings__ResetPasswordUrl=${RESET_PASSWORD_URL:-http://localhost:4200/auth/reset-password}
+    volumes:
+      - dataprotection-keys:/app/keys
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+      mailpit:
+        condition: service_started
+
+  # Test mail server for development: nothing leaves the machine
+  mailpit:
+    image: axllent/mailpit:v1.27
+    container_name: servicesa-mailpit
+    ports:
+      - "8025:8025" # web inbox
+      - "1025:1025" # SMTP
+    environment:
+      - MP_MAX_MESSAGES=500
+      # Accept any SMTP user/password so the API works the same with or without credentials
+      - MP_SMTP_AUTH_ACCEPT_ANY=1
+      - MP_SMTP_AUTH_ALLOW_INSECURE=1
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2025-latest
+    container_name: servicesa-sqlserver
+    ports:
+      - "1434:1433" # host port 1434 (1433 is often taken by a local SQL Server)
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=${MSSQL_SA_PASSWORD:-Your_strong_Passw0rd}
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    healthcheck:
+      test: /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P "$$MSSQL_SA_PASSWORD" -Q "SELECT 1" || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+volumes:
+  sqlserver-data:
+  # Do not delete: without these keys the saved SMTP password can't be decrypted (save it again in Settings > Email)
+  dataprotection-keys:

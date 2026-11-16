@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="APP_Name" xml:space="preserve"><value>System Architecture</value></data>
+  <data name="NotFound" xml:space="preserve"><value>العنصر المطلوب غير موجود.</value></data>
+  <data name="BadRequest" xml:space="preserve"><value>الطلب غير صالح.</value></data>
+  <data name="ValidationFailed" xml:space="preserve"><value>حدث خطأ أو أكثر في التحقق من البيانات.</value></data>
+  <data name="InternalServerError" xml:space="preserve"><value>حدث خطأ غير متوقع. يرجى المحاولة لاحقًا.</value></data>
+  <data name="Unauthorized" xml:space="preserve"><value>غير مصرح لك بتنفيذ هذا الإجراء.</value></data>
+  <data name="TooManyRequests" xml:space="preserve"><value>تم تجاوز عدد المحاولات المسموح بها. يرجى الانتظار قليلًا ثم المحاولة مرة أخرى.</value></data>
+  <data name="AllRightsReserved" xml:space="preserve"><value>جميع الحقوق محفوظة</value></data>
+  <data name="FailedLogin" xml:space="preserve"><value>فشل تسجيل الدخول.</value></data>
+  <data name="LoginSuccessful" xml:space="preserve"><value>تم تسجيل الدخول بنجاح.</value></data>
+  <data name="SuccessLoginTitle" xml:space="preserve"><value>تسجيل دخول جديد إلى حسابك</value></data>
+  <data name="IFYouNotLoggedIn" xml:space="preserve"><value>إذا لم تكن أنت من قام بهذه العملية، غيّر كلمة المرور وتواصل مع الدعم فورًا.</value></data>
+  <data name="Login_Information_Incorrect" xml:space="preserve"><value>بيانات الدخول غير صحيحة.</value></data>
+  <data name="UserNotActive" xml:space="preserve"><value>هذا المستخدم غير مفعّل. يرجى التواصل مع مدير النظام.</value></data>
+  <data name="AccountLocked" xml:space="preserve"><value>تم قفل الحساب مؤقتًا بسبب كثرة المحاولات الفاشلة. حاول مرة أخرى لاحقًا.</value></data>
+  <data name="User_Already_Logged_In" xml:space="preserve"><value>هذا المستخدم مسجل دخوله بالفعل من جهاز آخر. سجّل الخروج من هناك أولًا، أو سجّل الدخول مرة أخرى مع forceLogin = true.</value></data>
+  <data name="OTP_Sent" xml:space="preserve"><value>تم إرسال رمز التحقق إلى بريدك الإلكتروني.</value></data>
+  <data name="OTP_FAIL" xml:space="preserve"><value>رمز التحقق غير صالح أو انتهت صلاحيته.</value></data>
+  <data name="OtpEmailTitle" xml:space="preserve"><value>رمز التحقق الخاص بك</value></data>
+  <data name="OtpEmailBody" xml:space="preserve"><value>استخدم هذا الرمز لإكمال تسجيل الدخول. صلاحيته 5 دقائق.</value></data>
+  <data name="CurrentUserUnknown" xml:space="preserve"><value>تعذّر التعرف على المستخدم الحالي، برجاء تسجيل الدخول مجددًا.</value></data>
+  <data name="UserNotFound" xml:space="preserve"><value>المستخدم غير موجود.</value></data>
+  <data name="RoleNotFound" xml:space="preserve"><value>صلاحية أو أكثر غير موجودة.</value></data>
+  <data name="RolesAlreadyAssigned" xml:space="preserve"><value>الصلاحيات التالية مضافة مسبقًا للمستخدم:</value></data>
+  <data name="CannotRemoveOwnAdministrator" xml:space="preserve"><value>لا يمكنك إزالة صلاحية المدير من حسابك.</value></data>
+  <data name="CannotDeactivateYourself" xml:space="preserve"><value>لا يمكنك إيقاف حسابك.</value></data>
+  <data name="EmailButtonFallback" xml:space="preserve"><value>إذا لم يعمل الزر، انسخ هذا الرابط في المتصفح:</value></data>
+  <data name="EmailAutomatedNote" xml:space="preserve"><value>هذه رسالة تلقائية، يرجى عدم الرد عليها.</value></data>
+  <data name="SmtpPasswordRequired" xml:space="preserve"><value>غيّرت السيرفر أو اسم المستخدم: اكتب باسورد الـ SMTP مرة أخرى.</value></data>
+  <data name="SessionCannotBeRenewed" xml:space="preserve"><value>انتهت جلستك ولا يمكن تجديدها. يرجى تسجيل الدخول مرة أخرى.</value></data>
+  <data name="GroupNotFound" xml:space="preserve"><value>المجموعة غير موجودة.</value></data>
+  <data name="GroupNameExists" xml:space="preserve"><value>توجد مجموعة بنفس الاسم.</value></data>
+  <data name="CannotLoseOwnAdministratorByGroup" xml:space="preserve"><value>هذا التعديل سيزيل صلاحية المدير من حسابك.</value></data>
+  <data name="TestEmailTitle" xml:space="preserve"><value>رسالة تجريبية</value></data>
+  <data name="TestEmailBody" xml:space="preserve"><value>إذا كنت تقرأ هذه الرسالة فإعدادات البريد تعمل.</value></data>
+  <data name="WelcomeTitle" xml:space="preserve"><value>أهلًا بك</value></data>
+  <data name="WelcomeBody" xml:space="preserve"><value>تم إنشاء حسابك. اسم المستخدم الخاص بك هو:</value></data>
+  <data name="PasswordChangedTitle" xml:space="preserve"><value>تم تغيير كلمة المرور</value></data>
+  <data name="PasswordChangedBody" xml:space="preserve"><value>تم تغيير كلمة مرور حسابك وتم إنهاء كل الجلسات السابقة.</value></data>
+  <data name="ResetPasswordTitle" xml:space="preserve"><value>استعادة كلمة المرور</value></data>
+  <data name="ResetPasswordBody" xml:space="preserve"><value>وصلنا طلب لاستعادة كلمة المرور الخاصة بك. إذا لم تطلب ذلك، تجاهل هذه الرسالة.</value></data>
+  <data name="ResetPasswordButton" xml:space="preserve"><value>استعادة كلمة المرور</value></data>
+  <data name="InvalidResetToken" xml:space="preserve"><value>رابط الاستعادة غير صالح أو انتهت صلاحيته.</value></data>
+</root>

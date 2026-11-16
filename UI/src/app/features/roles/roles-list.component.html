@@ -1,0 +1,97 @@
+<div class="page-header">
+  <div>
+    <h1 class="page-title">{{ 'roles.title' | t }}</h1>
+    <p class="page-subtitle">{{ 'roles.subtitle' | t }}</p>
+  </div>
+  @if (canCreate) {
+    <div class="page-actions">
+      <button type="button" class="btn btn--primary" (click)="openCreate()">
+        <app-icon name="plus" [size]="18" /> {{ 'roles.add' | t }}
+      </button>
+    </div>
+  }
+</div>
+
+<article class="card">
+  <div class="toolbar">
+    <label class="search">
+      <app-icon name="search" [size]="18" class="search__icon" />
+      <input class="input input--with-icon" type="search" [value]="search()" (input)="onSearch($any($event.target).value)"
+        [attr.aria-label]="'roles.search' | t" [placeholder]="'roles.search' | t" />
+    </label>
+    <span class="muted">{{ 'roles.total' | t: { count: total() } }}</span>
+  </div>
+
+  @if (loading() && items().length === 0) {
+    <div class="skeleton-list"><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span></div>
+  } @else if (failed()) {
+    <div class="alert alert--error" role="alert">
+      {{ 'errors.unexpected' | t }}
+      <button type="button" class="btn btn--outline btn--sm" (click)="load()">
+        <app-icon name="refresh" [size]="16" /> {{ 'common.retry' | t }}
+      </button>
+    </div>
+  } @else if (items().length === 0) {
+    <p class="empty muted">{{ 'roles.empty' | t }}</p>
+  } @else {
+    <div class="table-wrap" [class.is-loading]="loading()">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>{{ 'roles.roleTitle' | t }}</th>
+            <th>{{ 'roles.name' | t }}</th>
+            <th>{{ 'roles.description' | t }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (role of items(); track role.id) {
+            <tr>
+              <td><span class="user-cell"><span class="stat__icon stat__icon--sm"><app-icon name="shield" [size]="16" /></span> {{ role.title }}</span></td>
+              <td dir="ltr"><code class="code">{{ role.name }}</code></td>
+              <td class="cell-wrap">{{ role.description ?? '—' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    @if (totalPages() > 1) {
+      <nav class="pager" aria-label="Pagination">
+        <button type="button" class="icon-btn" (click)="goTo(page() - 1)" [disabled]="page() === 1" [attr.aria-label]="'users.previous' | t">
+          <app-icon name="chevronStart" class="flip-rtl" />
+        </button>
+        <span>{{ 'users.page' | t: { page: page(), pages: totalPages() } }}</span>
+        <button type="button" class="icon-btn" (click)="goTo(page() + 1)" [disabled]="page() === totalPages()" [attr.aria-label]="'users.next' | t">
+          <app-icon name="chevronEnd" class="flip-rtl" />
+        </button>
+      </nav>
+    }
+  }
+</article>
+
+<app-dialog [open]="dialogOpen()" [busy]="saving()" [title]="'roles.createTitle' | t" (closed)="dialogOpen.set(false)">
+  <form id="role-form" [formGroup]="form" (ngSubmit)="create()" novalidate class="form">
+    <label class="field">
+      <span class="field__label">{{ 'roles.roleTitle' | t }} *</span>
+      <input class="input" formControlName="title" [attr.aria-invalid]="invalid('title')" />
+      @if (invalid('title')) { <span class="field__error">{{ 'users.invalidUserName' | t }}</span> }
+    </label>
+    <label class="field">
+      <span class="field__label">{{ 'roles.name' | t }} *</span>
+      <input class="input" formControlName="name" dir="ltr" autocomplete="off" placeholder="ViewReports"
+        [attr.aria-invalid]="invalid('name')" />
+      @if (invalid('name')) { <span class="field__error">{{ 'roles.invalidName' | t }}</span> }
+      <small class="muted">{{ 'roles.nameHint' | t }}</small>
+    </label>
+    <label class="field">
+      <span class="field__label">{{ 'roles.description' | t }}</span>
+      <textarea class="input" rows="3" formControlName="description"></textarea>
+    </label>
+  </form>
+  <div dialog-actions>
+    <button type="button" class="btn btn--outline" (click)="dialogOpen.set(false)" [disabled]="saving()">{{ 'common.cancel' | t }}</button>
+    <button type="submit" form="role-form" class="btn btn--primary" [disabled]="saving()">
+      @if (saving()) { <span class="spinner" aria-hidden="true"></span> {{ 'common.saving' | t }} } @else { {{ 'common.save' | t }} }
+    </button>
+  </div>
+</app-dialog>

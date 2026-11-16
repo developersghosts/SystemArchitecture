@@ -1,4 +1,16 @@
+global using BuildingBlocks;
+global using BuildingBlocks.CQRS;
+global using BuildingBlocks.Exceptions;
+global using BuildingBlocks.Localization;
+global using BuildingBlocks.Localization.Resources;
+global using BuildingBlocks.Pagination;
 global using FluentValidation;
 global using Mapster;
 global using MediatR;
+global using Microsoft.AspNetCore.Identity;
+global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Options;
+global using ServicesA.Application.Abstractions;
+global using ServicesA.Domain.Auditing;
+global using ServicesA.Domain.Entities.Identity;

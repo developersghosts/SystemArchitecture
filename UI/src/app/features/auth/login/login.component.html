@@ -1,0 +1,57 @@
+<h2 class="auth__title">{{ 'login.title' | t }}</h2>
+<p class="auth__subtitle">{{ 'login.subtitle' | t }}</p>
+
+<!-- Signed in on another device: a decision, so a dialog (not a fixed message) -->
+<app-dialog [open]="!!alreadyLoggedIn()" [busy]="loading()" [title]="'login.alreadyLoggedIn' | t" (closed)="alreadyLoggedIn.set(null)">
+  <p>{{ alreadyLoggedIn() }}</p>
+  <div dialog-actions>
+    <button type="button" class="btn btn--outline" (click)="alreadyLoggedIn.set(null)" [disabled]="loading()">
+      {{ 'common.cancel' | t }}
+    </button>
+    <button type="button" class="btn btn--primary" (click)="submit(true)" [disabled]="loading()">
+      @if (loading()) { <span class="spinner" aria-hidden="true"></span> }
+      {{ 'login.forceLogin' | t }}
+    </button>
+  </div>
+</app-dialog>
+
+<form [formGroup]="form" (ngSubmit)="submit()" novalidate class="form">
+  <label class="field">
+    <span class="field__label">{{ 'login.userName' | t }}</span>
+    <span class="field__control">
+      <app-icon name="user" [size]="18" class="field__icon" />
+      <input class="input input--with-icon" formControlName="userName" autocomplete="username" autofocus
+        [attr.aria-invalid]="form.controls.userName.touched && form.controls.userName.invalid" />
+    </span>
+    @if (form.controls.userName.touched && form.controls.userName.invalid) {
+      <span class="field__error">{{ 'common.required' | t }}</span>
+    }
+  </label>
+
+  <label class="field">
+    <span class="field__label">{{ 'login.password' | t }}</span>
+    <span class="field__control">
+      <app-icon name="lock" [size]="18" class="field__icon" />
+      <input class="input input--with-icon input--with-action" formControlName="password"
+        [type]="showPassword() ? 'text' : 'password'" autocomplete="current-password"
+        [attr.aria-invalid]="form.controls.password.touched && form.controls.password.invalid" />
+      <button type="button" class="field__action" (click)="showPassword.update(s => !s)"
+        [attr.aria-label]="(showPassword() ? 'login.hidePassword' : 'login.showPassword') | t">
+        <app-icon [name]="showPassword() ? 'eyeOff' : 'eye'" [size]="18" />
+      </button>
+    </span>
+    @if (form.controls.password.touched && form.controls.password.invalid) {
+      <span class="field__error">{{ 'common.required' | t }}</span>
+    }
+    <a class="link-btn field__link" routerLink="/auth/forgot-password">{{ 'login.forgot' | t }}</a>
+  </label>
+
+  <button type="submit" class="btn btn--primary btn--block" [disabled]="loading()">
+    @if (loading()) {
+      <span class="spinner" aria-hidden="true"></span>
+      {{ 'login.submitting' | t }}
+    } @else {
+      {{ 'login.submit' | t }}
+    }
+  </button>
+</form>

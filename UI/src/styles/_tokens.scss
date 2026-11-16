@@ -1,0 +1,53 @@
+// Design tokens. --primary, --bg-light, --bg-dark, --font-family and --font-size are overwritten at runtime
+// from the project configuration (AppConfigService). Everything else is derived from them.
+
+:root {
+  --primary: #4f46e5;
+  --on-primary: #ffffff;
+  --bg-light: #f4f6fb;
+  --bg-dark: #0f172a;
+  --font-family: 'Inter';
+  --font-size: 14px;
+
+  --radius-sm: 6px;
+  --radius: 10px;
+  --radius-lg: 16px;
+  --sidebar-width: 260px;
+  --sidebar-collapsed: 76px;
+  --navbar-height: 64px;
+  --transition: 180ms ease;
+
+  --primary-soft: color-mix(in srgb, var(--primary) 12%, transparent);
+  --primary-hover: color-mix(in srgb, var(--primary) 85%, black);
+  --focus-ring: 0 0 0 3px color-mix(in srgb, var(--primary) 35%, transparent);
+
+  --success: #16a34a;
+  --warning: #d97706;
+  --danger: #dc2626;
+  --info: #2563eb;
+}
+
+// Light (default)
+:root,
+:root[data-theme='light'] {
+  --bg: var(--bg-light);
+  --surface: #ffffff;
+  --surface-2: color-mix(in srgb, var(--bg-light) 60%, white);
+  --text: #0f172a;
+  --text-muted: #64748b;
+  --border: #e2e8f0;
+  --shadow: 0 1px 2px rgb(15 23 42 / 6%), 0 4px 16px rgb(15 23 42 / 6%);
+  --sidebar-bg: #ffffff;
+}
+
+:root[data-theme='dark'] {
+  --bg: var(--bg-dark);
+  --surface: color-mix(in srgb, var(--bg-dark) 88%, white);
+  --surface-2: color-mix(in srgb, var(--bg-dark) 80%, white);
+  --text: #e2e8f0;
+  --text-muted: #94a3b8;
+  --border: color-mix(in srgb, var(--bg-dark) 72%, white);
+  --shadow: 0 1px 2px rgb(0 0 0 / 30%), 0 6px 20px rgb(0 0 0 / 25%);
+  --sidebar-bg: color-mix(in srgb, var(--bg-dark) 92%, white);
+  --primary-soft: color-mix(in srgb, var(--primary) 22%, transparent);
+}
