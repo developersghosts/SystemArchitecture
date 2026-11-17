@@ -8,12 +8,13 @@ import { ToastService } from '../../../core/services/toast.service';
 import { apiErrorMessage } from '../../../core/utils/api-error';
 import { PASSWORD_PATTERN, matchValidator } from '../../../core/utils/password';
 import { IconComponent } from '../../../shared/icon/icon.component';
+import { PasswordToggleComponent } from '../../../shared/password-toggle/password-toggle.component';
 
 /** Opened from the emailed link: /auth/reset-password?email=...&token=... -> POST /api/Account/reset-password. */
 @Component({
   selector: 'app-reset-password',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, RouterLink, IconComponent, TranslatePipe],
+  imports: [PasswordToggleComponent, ReactiveFormsModule, RouterLink, IconComponent, TranslatePipe],
   template: `
     <h2 class="auth__title">{{ 'reset.title' | t }}</h2>
 
@@ -25,15 +26,21 @@ import { IconComponent } from '../../../shared/icon/icon.component';
       <form [formGroup]="form" (ngSubmit)="submit()" novalidate class="form">
         <label class="field">
           <span class="field__label">{{ 'reset.newPassword' | t }}</span>
-          <input class="input" type="password" formControlName="newPassword" autocomplete="new-password" dir="ltr" autofocus
-            [attr.aria-invalid]="invalid('newPassword')" />
+          <span class="field__control" dir="ltr">
+            <input #pw1 class="input input--with-action" type="password" formControlName="newPassword" autocomplete="new-password" autofocus
+              [attr.aria-invalid]="invalid('newPassword')" />
+            <app-password-toggle [input]="pw1" />
+          </span>
           @if (invalid('newPassword')) { <span class="field__error">{{ 'users.passwordInvalid' | t }}</span> }
           <small class="muted">{{ 'users.passwordHint' | t }}</small>
         </label>
         <label class="field">
           <span class="field__label">{{ 'reset.confirmPassword' | t }}</span>
-          <input class="input" type="password" formControlName="confirmPassword" autocomplete="new-password" dir="ltr"
-            [attr.aria-invalid]="invalid('confirmPassword')" />
+          <span class="field__control" dir="ltr">
+            <input #pw2 class="input input--with-action" type="password" formControlName="confirmPassword" autocomplete="new-password"
+              [attr.aria-invalid]="invalid('confirmPassword')" />
+            <app-password-toggle [input]="pw2" />
+          </span>
           @if (invalid('confirmPassword')) { <span class="field__error">{{ 'reset.mismatch' | t }}</span> }
         </label>
         <button type="submit" class="btn btn--primary btn--block" [disabled]="loading()">
@@ -87,7 +94,13 @@ export class ResetPasswordComponent {
     this.auth.resetPassword(this.email()!, this.token()!, newPassword, confirmPassword).subscribe({
       next: () => {
         this.loading.set(false);
-        void this.router.navigate(['/auth/login'], { queryParams: { reset: 1 } });
+        if (this.auth.isAuthenticated()) {
+          // Someone else is signed in in this browser (e.g. the administrator): confirm and keep their session
+          this.toast.success(this.language.t('login.passwordReset'));
+          void this.router.navigate(['/dashboard']);
+        } else {
+          void this.router.navigate(['/auth/login'], { queryParams: { reset: 1 } });
+        }
       },
       error: (err: unknown) => {
         this.loading.set(false);

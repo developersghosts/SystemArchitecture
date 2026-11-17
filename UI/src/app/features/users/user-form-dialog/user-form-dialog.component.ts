@@ -7,6 +7,7 @@ import { LanguageService } from '../../../core/services/language.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { apiErrorMessage } from '../../../core/utils/api-error';
 import { DialogComponent } from '../../../shared/dialog/dialog.component';
+import { PasswordToggleComponent } from '../../../shared/password-toggle/password-toggle.component';
 import { UsersService } from '../users.service';
 
 import { PASSWORD_PATTERN as PASSWORD } from '../../../core/utils/password';
@@ -15,7 +16,7 @@ import { PASSWORD_PATTERN as PASSWORD } from '../../../core/utils/password';
 @Component({
   selector: 'app-user-form-dialog',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, DialogComponent, TranslatePipe],
+  imports: [PasswordToggleComponent, ReactiveFormsModule, DialogComponent, TranslatePipe],
   templateUrl: './user-form-dialog.component.html'
 })
 export class UserFormDialogComponent {

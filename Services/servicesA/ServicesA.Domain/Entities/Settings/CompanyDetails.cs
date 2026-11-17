@@ -48,6 +48,17 @@ public sealed class CompanyDetails : ValueObject
         };
     }
 
+    /// <summary>
+    /// IANA time zone of the company's country, used to show times in the UI and in emails:
+    /// Egypt "Africa/Cairo", Saudi Arabia "Asia/Riyadh"; null = the viewer's own time zone.
+    /// </summary>
+    public string? TimeZoneId => Country switch
+    {
+        "EG" => "Africa/Cairo",
+        "SA" => "Asia/Riyadh",
+        _ => null
+    };
+
     /// <summary>Culture of the Arabic messages for this company: "ar-EG", "ar-SA", or null for standard Arabic.</summary>
     public string? ArabicDialect => Country switch
     {

@@ -19,7 +19,13 @@ public sealed record EmailBranding(
     string? Email,
     string? Phone,
     string? Address,
-    string? Website);
+    string? Website,
+    TimeZoneInfo TimeZone)
+{
+    /// <summary>A UTC time in the company's time zone, e.g. "2026-11-17 14:05 (Africa/Cairo)".</summary>
+    public string FormatTime(DateTimeOffset utc) =>
+        $"{TimeZoneInfo.ConvertTime(utc, TimeZone):yyyy-MM-dd HH:mm} ({(TimeZone == TimeZoneInfo.Utc ? "UTC" : TimeZone.Id)})";
+}
 
 /// <summary>An image sent inside the email (referenced as cid:ContentId), because mail apps block data: URLs.</summary>
 public sealed record EmailInlineImage(string ContentId, byte[] Content, string MediaSubtype);
@@ -56,7 +62,23 @@ public sealed class EmailBrandingProvider(
 
         return new EmailBranding(arabic, name, primary, ReadableTextColor(primary), Mix(primary, "#FFFFFF", 0.9),
             c.Colors.LightBackground, fontStack, logoSrc, source.Logo, c.Company.Email, c.Company.Phone,
-            c.Company.Address, IsHttpUrl(c.Company.Website) ? c.Company.Website : null);
+            c.Company.Address, IsHttpUrl(c.Company.Website) ? c.Company.Website : null,
+            FindTimeZone(c.Company.TimeZoneId));
+    }
+
+    /// <summary>The company's time zone; UTC when no country is chosen or the zone is unknown on this server.</summary>
+    private TimeZoneInfo FindTimeZone(string? id)
+    {
+        if (id is null) return TimeZoneInfo.Utc;
+        try
+        {
+            return TimeZoneInfo.FindSystemTimeZoneById(id);
+        }
+        catch (Exception ex) when (ex is TimeZoneNotFoundException or InvalidTimeZoneException)
+        {
+            logger.LogWarning("Time zone {TimeZone} is not available on this server; using UTC", id);
+            return TimeZoneInfo.Utc;
+        }
     }
 
     public void Invalidate() => cache.Remove(CacheKey);

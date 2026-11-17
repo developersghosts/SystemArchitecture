@@ -8,12 +8,13 @@ import { ToastService } from '../../core/services/toast.service';
 import { apiErrorMessage } from '../../core/utils/api-error';
 import { PASSWORD_PATTERN, matchValidator } from '../../core/utils/password';
 import { IconComponent } from '../../shared/icon/icon.component';
+import { PasswordToggleComponent } from '../../shared/password-toggle/password-toggle.component';
 
 /** My details (from the session) and POST /api/Account/change-password. */
 @Component({
   selector: 'app-account',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, IconComponent, TranslatePipe, LocalDatePipe],
+  imports: [PasswordToggleComponent, ReactiveFormsModule, IconComponent, TranslatePipe, LocalDatePipe],
   template: `
     <div class="page-header">
       <div>
@@ -57,14 +58,20 @@ import { IconComponent } from '../../shared/icon/icon.component';
         <form [formGroup]="form" (ngSubmit)="submit()" novalidate class="form">
           <label class="field">
             <span class="field__label">{{ 'account.currentPassword' | t }}</span>
-            <input class="input" type="password" formControlName="currentPassword" autocomplete="current-password" dir="ltr"
-              [attr.aria-invalid]="invalid('currentPassword')" />
+            <span class="field__control" dir="ltr">
+              <input #pw1 class="input input--with-action" type="password" formControlName="currentPassword" autocomplete="current-password"
+                [attr.aria-invalid]="invalid('currentPassword')" />
+              <app-password-toggle [input]="pw1" />
+            </span>
             @if (invalid('currentPassword')) { <span class="field__error">{{ 'common.required' | t }}</span> }
           </label>
           <label class="field">
             <span class="field__label">{{ 'reset.newPassword' | t }}</span>
-            <input class="input" type="password" formControlName="newPassword" autocomplete="new-password" dir="ltr"
-              [attr.aria-invalid]="invalid('newPassword')" />
+            <span class="field__control" dir="ltr">
+              <input #pw2 class="input input--with-action" type="password" formControlName="newPassword" autocomplete="new-password"
+                [attr.aria-invalid]="invalid('newPassword')" />
+              <app-password-toggle [input]="pw2" />
+            </span>
             @if (form.controls.newPassword.hasError('same')) {
               <span class="field__error">{{ 'account.samePassword' | t }}</span>
             } @else if (invalid('newPassword')) {
@@ -74,8 +81,11 @@ import { IconComponent } from '../../shared/icon/icon.component';
           </label>
           <label class="field">
             <span class="field__label">{{ 'reset.confirmPassword' | t }}</span>
-            <input class="input" type="password" formControlName="confirmPassword" autocomplete="new-password" dir="ltr"
-              [attr.aria-invalid]="invalid('confirmPassword')" />
+            <span class="field__control" dir="ltr">
+              <input #pw3 class="input input--with-action" type="password" formControlName="confirmPassword" autocomplete="new-password"
+                [attr.aria-invalid]="invalid('confirmPassword')" />
+              <app-password-toggle [input]="pw3" />
+            </span>
             @if (invalid('confirmPassword')) { <span class="field__error">{{ 'reset.mismatch' | t }}</span> }
           </label>
           <div>

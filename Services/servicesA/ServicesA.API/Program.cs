@@ -11,6 +11,9 @@ var app = builder.Build();
 
 await app.InitializeDatabaseAsync();
 
+// Request logging first, so it records the final status (e.g. 400 from the exception handler, not 500)
+app.UseSerilogRequestLogging();
+
 app.UseExceptionHandler();
 
 if (app.Environment.IsDevelopment())
@@ -25,8 +28,6 @@ if (app.Environment.IsDevelopment())
         options.EnablePersistAuthorization();
     });
 }
-
-app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
 

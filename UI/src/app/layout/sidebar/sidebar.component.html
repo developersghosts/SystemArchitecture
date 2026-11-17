@@ -1,0 +1,55 @@
+<aside class="sidebar" [attr.aria-label]="'nav.main' | t">
+  <a class="sidebar__brand" routerLink="/dashboard">
+    @if (config.config().company.logoUrl; as logo) {
+      <img class="sidebar__logo" [src]="logo" alt="" />
+    } @else {
+      <span class="sidebar__logo sidebar__logo--text">{{ initials() }}</span>
+    }
+    <span class="sidebar__name">{{ config.companyName() }}</span>
+  </a>
+
+  <nav class="sidebar__nav">
+    @for (group of menu(); track group.label) {
+      <div class="sidebar__group">
+        <span class="sidebar__group-label">{{ group.label | t }}</span>
+
+        @for (item of group.items; track item.label) {
+          @if (item.children) {
+            <!-- Collapsible item: in the narrow (icons only) menu its links are shown directly -->
+            @if (!collapsed()) {
+              <button type="button" class="sidebar__link sidebar__parent" [class.has-active]="hasActiveChild(item)"
+                [attr.aria-expanded]="isOpen(item)" [attr.aria-controls]="'menu-' + item.id" (click)="toggle(item)">
+                <app-icon [name]="item.icon" />
+                <span class="sidebar__label">{{ item.label | t }}</span>
+                <app-icon name="chevronDown" [size]="16" class="sidebar__chevron" [class.is-open]="isOpen(item)" />
+              </button>
+            }
+            <div class="sidebar__children" [id]="'menu-' + item.id" [class.is-open]="isOpen(item) || collapsed()">
+              <div class="sidebar__children-inner">
+                @for (child of item.children; track child.link) {
+                  <a class="sidebar__link sidebar__child" [routerLink]="child.link" routerLinkActive="is-active"
+                    [attr.title]="collapsed() ? (child.label | t) : null" [attr.tabindex]="isOpen(item) || collapsed() ? 0 : -1">
+                    <app-icon [name]="child.icon" [size]="18" />
+                    <span class="sidebar__label">{{ child.label | t }}</span>
+                  </a>
+                }
+              </div>
+            </div>
+          } @else {
+            <a class="sidebar__link" [routerLink]="item.link!" routerLinkActive="is-active"
+              [attr.title]="collapsed() ? (item.label | t) : null">
+              <app-icon [name]="item.icon" />
+              <span class="sidebar__label">{{ item.label | t }}</span>
+            </a>
+          }
+        }
+      </div>
+    }
+  </nav>
+
+  <button type="button" class="sidebar__collapse" (click)="collapseToggled.emit()" [attr.aria-label]="'nav.collapse' | t"
+    [attr.aria-expanded]="!collapsed()">
+    <app-icon name="chevronsStart" class="flip-rtl" />
+    <span class="sidebar__label">{{ 'nav.collapse' | t }}</span>
+  </button>
+</aside>

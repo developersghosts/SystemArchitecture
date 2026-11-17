@@ -60,11 +60,19 @@ public sealed class LoginHandler(
 /// <summary>Password check shared by login and verify-otp: lockout, failed-attempt counting and login history.</summary>
 internal static class LoginGuard
 {
+    /// <summary>Users may sign in with their user name or their email (emails are unique, see RequireUniqueEmail).</summary>
+    public static async Task<ApplicationUser?> FindByUserNameOrEmailAsync(UserManager<ApplicationUser> userManager, string login)
+    {
+        var value = login.Trim();
+        return await userManager.FindByNameAsync(value)
+               ?? (value.Contains('@') ? await userManager.FindByEmailAsync(value) : null);
+    }
+
     public static async Task<ApplicationUser> CheckCredentialsAsync(
         UserManager<ApplicationUser> userManager, IAppDbContext db, IStringLocalizerService localizer,
         LoginHistoryRecorder history, string userName, string password, CancellationToken cancellationToken)
     {
-        var user = await userManager.FindByNameAsync(userName.Trim());
+        var user = await FindByUserNameOrEmailAsync(userManager, userName);
 
         // Same message whether the user exists or not, so user names can't be discovered.
         if (user is null)

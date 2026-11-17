@@ -12,6 +12,7 @@ import { LocalDatePipe } from '../../../core/i18n/local-date.pipe';
 import { TranslatePipe } from '../../../core/i18n/translate.pipe';
 import {
   ARABIC_FONTS,
+  COUNTRY_TIME_ZONES,
   ENGLISH_FONTS,
   Language,
   ProjectConfiguration,
@@ -99,6 +100,14 @@ export class ProjectConfigurationComponent implements HasUnsavedChanges {
     this.value();
     this.language.language();
     return this.appConfig.formatMoney(1234.5, this.toConfiguration());
+  });
+
+  /** Time zone that the chosen country gives, with the current time there (before saving). */
+  protected readonly zoneHint = computed(() => {
+    const zone = COUNTRY_TIME_ZONES[this.value().company?.country ?? ''];
+    if (!zone) return null;
+    const time = new Intl.DateTimeFormat(this.appConfig.locale(), { timeStyle: 'short', timeZone: zone }).format(new Date());
+    return { zone, time };
   });
 
   /** The offered fonts, plus the saved one if it is not in the list. */

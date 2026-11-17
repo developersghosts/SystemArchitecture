@@ -25,7 +25,7 @@ public sealed class ResendOtpHandler(
 {
     public async Task<bool> Handle(ResendOtpCommand request, CancellationToken cancellationToken)
     {
-        var user = await userManager.FindByNameAsync(request.UserName.Trim());
+        var user = await LoginGuard.FindByUserNameOrEmailAsync(userManager, request.UserName);
         if (user is null || !user.IsActive || user.OtpCode is null)
             return true;
 

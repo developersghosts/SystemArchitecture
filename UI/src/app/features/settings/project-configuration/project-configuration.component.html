@@ -73,6 +73,13 @@
             <option value="SA">{{ 'config.country.SA' | t }}</option>
           </select>
           <small class="muted">{{ 'config.countryHint' | t }}</small>
+          <small class="muted">
+            @if (zoneHint(); as z) {
+              <app-icon name="clock" [size]="13" /> {{ 'config.timeZone' | t: { zone: z.zone, time: z.time } }}
+            } @else {
+              <app-icon name="clock" [size]="13" /> {{ 'config.timeZoneBrowser' | t }}
+            }
+          </small>
         </label>
         <label class="field field--wide">
           <span class="field__label">{{ 'config.address' | t }}</span>

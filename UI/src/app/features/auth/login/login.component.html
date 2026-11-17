@@ -17,7 +17,7 @@
 
 <form [formGroup]="form" (ngSubmit)="submit()" novalidate class="form">
   <label class="field">
-    <span class="field__label">{{ 'login.userName' | t }}</span>
+    <span class="field__label">{{ 'login.userNameOrEmail' | t }}</span>
     <span class="field__control">
       <app-icon name="user" [size]="18" class="field__icon" />
       <input class="input input--with-icon" formControlName="userName" autocomplete="username" autofocus

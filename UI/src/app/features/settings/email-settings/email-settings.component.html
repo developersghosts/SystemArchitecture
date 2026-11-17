@@ -66,8 +66,11 @@
           </label>
           <label class="field">
             <span class="field__label">{{ 'email.password' | t }}</span>
-            <input class="input" type="password" formControlName="password" dir="ltr" autocomplete="new-password"
-              [placeholder]="s.source === 'database' && s.hasPassword ? '••••••••' : ''" />
+            <span class="field__control" dir="ltr">
+              <input #pw1 class="input input--with-action" type="password" formControlName="password" autocomplete="new-password"
+                [placeholder]="s.source === 'database' && s.hasPassword ? '••••••••' : ''" />
+              <app-password-toggle [input]="pw1" />
+            </span>
             <small class="muted">{{ (s.source === 'database' && s.hasPassword ? 'email.passwordSaved' : 'email.passwordNone') | t }}</small>
             @if (s.source === 'database' && s.hasPassword) {
               <label class="inline-check">

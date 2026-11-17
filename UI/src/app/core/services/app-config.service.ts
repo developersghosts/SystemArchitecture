@@ -23,6 +23,15 @@ export class AppConfigService {
 
   readonly config = signal<ProjectConfiguration>(DEFAULT_CONFIGURATION);
 
+  /** Company time zone for showing times ("Africa/Cairo", "Asia/Riyadh"); undefined = the browser's own. */
+  readonly timeZone = computed(() => this.config().timeZone ?? undefined);
+
+  /** Locale for dates and numbers: Egyptian or Saudi Arabic (Gregorian calendar), or English. */
+  readonly locale = computed(() => {
+    if (!this.language.isArabic()) return 'en-GB';
+    return this.config().company.country === 'SA' ? 'ar-SA-u-ca-gregory' : 'ar-EG';
+  });
+
   readonly companyName = computed(() => {
     const company = this.config().company;
     return this.language.isArabic() ? company.nameAr : company.nameEn;

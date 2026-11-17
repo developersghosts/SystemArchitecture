@@ -26,7 +26,8 @@ public sealed record ProjectConfigurationDto(
     FontsDto Fonts,
     string DefaultLanguage,
     string DefaultTheme,
-    DateTime? ModifiedAtUtc);
+    DateTime? ModifiedAtUtc,
+    string? TimeZone = null);
 
 internal static class ProjectConfigurationMapping
 {
@@ -38,5 +39,6 @@ internal static class ProjectConfigurationMapping
         new FontsDto(c.Fonts.FontFamilyEn, c.Fonts.FontFamilyAr, c.Fonts.BaseFontSize),
         c.DefaultLanguage,
         c.DefaultTheme,
-        c.ModifiedAtUtc);
+        c.ModifiedAtUtc,
+        c.Company.TimeZoneId);
 }

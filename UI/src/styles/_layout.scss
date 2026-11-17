@@ -128,13 +128,91 @@
 
   &:hover {
     background: var(--primary-soft);
-    color: var(--primary);
+    color: var(--primary-text);
   }
 }
 
 .sidebar__link.is-active {
   background: var(--primary);
   color: var(--on-primary);
+}
+
+// Collapsible item ("Users") and its links
+.sidebar__parent {
+  width: 100%;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+  text-align: start;
+
+  &.has-active {
+    color: var(--primary-text);
+  }
+}
+
+.sidebar__chevron {
+  margin-inline-start: auto;
+  transition: transform var(--transition);
+
+  &.is-open {
+    transform: rotate(180deg);
+  }
+}
+
+// Height animation without measuring: grid row 0fr -> 1fr
+.sidebar__children {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 220ms ease;
+
+  &.is-open {
+    grid-template-rows: 1fr;
+  }
+}
+
+.sidebar__children-inner {
+  overflow: hidden;
+  display: grid;
+  gap: 0.2rem;
+}
+
+.sidebar__child {
+  min-height: 2.5rem;
+  margin-inline-start: 1.1rem;
+  padding-inline-start: 1rem;
+  border-inline-start: 2px solid var(--border);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  font-weight: 500;
+
+  [dir='rtl'] & {
+    border-radius: var(--radius) 0 0 var(--radius);
+  }
+
+  &:first-child {
+    margin-block-start: 0.2rem;
+  }
+
+  &.is-active {
+    border-inline-start-color: var(--primary);
+  }
+}
+
+// Narrow menu (icons only): the child links look like normal items
+.shell--collapsed .sidebar__child {
+  margin-inline-start: 0;
+  padding-inline-start: 0;
+  border-inline-start: 0;
+  border-radius: var(--radius);
+}
+
+@media (max-width: 900px) {
+  .shell--collapsed .sidebar__child {
+    margin-inline-start: 1.1rem;
+    padding-inline-start: 1rem;
+    border-inline-start: 2px solid var(--border);
+  }
 }
 
 .sidebar__collapse {
@@ -504,7 +582,7 @@
   align-items: center;
   gap: 0.5rem;
   font-weight: 600;
-  color: var(--primary);
+  color: var(--primary-text);
 }
 
 .save-bar__actions {

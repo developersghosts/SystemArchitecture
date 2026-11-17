@@ -41,7 +41,15 @@ export interface ProjectConfiguration {
   defaultLanguage: Language;
   defaultTheme: Theme;
   modifiedAtUtc?: string | null;
+  /** IANA time zone from the company country (read only): "Africa/Cairo", "Asia/Riyadh", or null = the browser's. */
+  timeZone?: string | null;
 }
+
+/** Same mapping as CompanyDetails.TimeZoneId in the API (used to preview before saving). */
+export const COUNTRY_TIME_ZONES: Record<string, string> = {
+  EG: 'Africa/Cairo',
+  SA: 'Asia/Riyadh'
+};
 
 /** Used until the API answers, or when it can't be reached. Matches ProjectConfiguration.CreateDefault(). */
 export const DEFAULT_CONFIGURATION: ProjectConfiguration = {

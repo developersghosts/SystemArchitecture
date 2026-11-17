@@ -102,7 +102,7 @@
 
   &:hover {
     background: var(--primary-soft);
-    color: var(--primary);
+    color: var(--primary-text);
   }
 
   &--sm {
@@ -125,7 +125,7 @@
   font-size: 0.9rem;
 
   &:hover {
-    border-color: var(--primary);
+    border-color: var(--primary-text);
     color: var(--primary);
   }
 }
@@ -137,7 +137,7 @@
   padding: 0.25rem;
   border: 0;
   background: none;
-  color: var(--primary);
+  color: var(--primary-text);
   font-weight: 600;
   cursor: pointer;
 
@@ -386,7 +386,7 @@ textarea.input {
 }
 
 .tag {
-  color: var(--primary);
+  color: var(--primary-text);
   background: var(--primary-soft);
 }
 

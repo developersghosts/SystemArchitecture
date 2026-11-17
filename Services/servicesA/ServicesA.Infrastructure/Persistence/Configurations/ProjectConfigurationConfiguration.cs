@@ -23,6 +23,7 @@ public class ProjectConfigurationConfiguration : IEntityTypeConfiguration<Projec
             company.Property(p => p.LogoUrl).HasColumnName("CompanyLogoUrl"); // nvarchar(max): may hold a data URL
             company.Property(p => p.Country).HasColumnName("CompanyCountry").HasMaxLength(2);
             company.Ignore(p => p.ArabicDialect);
+            company.Ignore(p => p.TimeZoneId);
         });
 
         builder.ComplexProperty(c => c.Currency, currency =>

@@ -9,6 +9,7 @@ import { LanguageService } from '../../../core/services/language.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { apiErrorMessage } from '../../../core/utils/api-error';
 import { IconComponent } from '../../../shared/icon/icon.component';
+import { PasswordToggleComponent } from '../../../shared/password-toggle/password-toggle.component';
 
 type Security = 'Auto' | 'SslOnConnect' | 'StartTls' | 'None';
 
@@ -39,7 +40,7 @@ const HOST = /^[A-Za-z0-9.-]+$/;
 @Component({
   selector: 'app-email-settings',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, IconComponent, TranslatePipe, LocalDatePipe],
+  imports: [PasswordToggleComponent, ReactiveFormsModule, IconComponent, TranslatePipe, LocalDatePipe],
   templateUrl: './email-settings.component.html'
 })
 export class EmailSettingsComponent {

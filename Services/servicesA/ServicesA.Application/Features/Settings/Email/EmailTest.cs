@@ -124,15 +124,17 @@ public sealed class SendTestEmailValidator : AbstractValidator<SendTestEmailComm
     public SendTestEmailValidator() => RuleFor(x => x.ToEmail).ValidEmail();
 }
 
-public sealed class SendTestEmailHandler(IEmailService email, EmailTemplates templates,
+public sealed class SendTestEmailHandler(IEmailService email, EmailTemplates templates, EmailBrandingProvider branding,
     IStringLocalizerService localizer, TimeProvider clock) : ICommandHandler<SendTestEmailCommand, EmailDeliveryResult>
 {
     public async Task<EmailDeliveryResult> Handle(SendTestEmailCommand request, CancellationToken cancellationToken)
     {
+        // The time in the company's time zone (Cairo / Riyadh), not the server's UTC
+        var now = (await branding.GetAsync(cancellationToken)).FormatTime(clock.GetUtcNow());
         var body = await templates.BuildAsync(
             localizer.Get(ResourceKeys.TestEmailTitle),
             localizer.Get(ResourceKeys.TestEmailBody),
-            highlight: clock.GetUtcNow().ToString("yyyy-MM-dd HH:mm 'UTC'"));
+            highlight: now);
         return await email.TrySendAsync(request.ToEmail.Trim(), localizer.Get(ResourceKeys.TestEmailTitle), body, cancellationToken);
     }
 }

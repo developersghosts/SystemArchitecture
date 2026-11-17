@@ -34,8 +34,11 @@
       @if (!isEdit()) {
         <label class="field field--wide">
           <span class="field__label">{{ 'users.password' | t }} *</span>
-          <input class="input" type="password" formControlName="password" dir="ltr" autocomplete="new-password"
-            [attr.aria-invalid]="invalid('password')" />
+          <span class="field__control" dir="ltr">
+            <input #pw1 class="input input--with-action" type="password" formControlName="password" autocomplete="new-password"
+              [attr.aria-invalid]="invalid('password')" />
+            <app-password-toggle [input]="pw1" />
+          </span>
           @if (invalid('password')) { <span class="field__error">{{ 'users.passwordInvalid' | t }}</span> }
           <small class="muted">{{ 'users.passwordHint' | t }}</small>
         </label>

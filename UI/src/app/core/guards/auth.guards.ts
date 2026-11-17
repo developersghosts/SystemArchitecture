@@ -17,9 +17,15 @@ export const authGuard: CanMatchFn = (_route, segments) => {
   });
 };
 
-/** Login/OTP pages are for guests only; signed-in users go to the dashboard. */
-export const guestGuard: CanMatchFn = () =>
-  inject(AuthService).isAuthenticated() ? inject(Router).createUrlTree(['/dashboard']) : true;
+/**
+ * Login/OTP pages are for guests only; signed-in users go to the dashboard.
+ * Except the reset-password page: its link comes from an email and may be opened in a browser where someone
+ * (e.g. the administrator) is still signed in; sending them to the dashboard made the link "not open".
+ */
+export const guestGuard: CanMatchFn = (_route, segments) => {
+  if (segments.some((s) => s.path === 'reset-password')) return true;
+  return inject(AuthService).isAuthenticated() ? inject(Router).createUrlTree(['/dashboard']) : true;
+};
 
 /** The OTP page needs step 1 (user name + password) first; after a page reload it is gone. */
 export const otpGuard: CanActivateFn = () =>
